@@ -1,0 +1,43 @@
+version: '3'
+
+networks:
+  firefs:
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: stock_nginx
+    ports:
+      - "8099:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - firefs
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stock_php
+    user: 'www-data:www-data'
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "9100:9000"
+    networks:
+      - firefs
+
+  composer:
+    image: composer:latest
+    user: "1000:1000"
+    container_name: stock_composer
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    networks:
+      - firefs

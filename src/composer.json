@@ -1,0 +1,5 @@
+{
+    "require": {
+        "elementaryframework/fire-fs": "^1.2"
+    }
+}
